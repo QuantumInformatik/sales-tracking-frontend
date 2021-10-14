@@ -1,40 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Product} from "../../../core/model/product.dto";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ConfirmationService} from "primeng/api";
+import {ProductService} from "../../../core/services/product.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
 
+  private sub: Subscription = new Subscription();
+  @Output() outputEmitProduct: EventEmitter<any> = new EventEmitter();
   products: Array<Product> = [];
   totalRecords = 0;
   loading = false;
   public sortField = 'id';
   public sortOrder = 1;
+  productSelected = new Product();
+
+  productName: any;
+  productFind = new Product();
 
   public cols: any[] | undefined;
 
-  constructor( private router: Router, private route: ActivatedRoute,) { }
+  constructor( private router: Router, private route: ActivatedRoute,
+               private confirmationService: ConfirmationService, private productService: ProductService) { }
 
   ngOnInit(): void {
-
-    let product = {
-      id: 1,
-      name: "any",
-      code: "any",
-      stock: "any",
-      idProvider: "any",
-      netPrice: "any",
-      sellPrice: "any",
-      timestamp: "any",
-    }
-
-    this.products.push(product)
-
     this.cols = [
       { field: 'code', header: 'Code', width: '140px',sort: true, align: 'left' },
       { field: 'name', header: 'Name', width: '140px',sort: true, align: 'left' },
@@ -44,6 +39,56 @@ export class ProductListComponent implements OnInit {
       { field: 'sellPrice', header: 'Sell price', width: '140px',sort: true, align: 'left' },
       { field: 'actions', header: 'Actions', width: '140px', align: 'left' },
     ];
+    this.getProductsByName()
+
   }
 
+  getProductsByName(name?: any): void {
+    this.loading = true;
+    this.sub.add(this.productService.getProducts(name).subscribe(data => {
+      this.products = data.body;
+      this.productFind = this.products[0]
+      this.totalRecords = data.length;
+    }, error => {
+      this.loading = false;
+      console.error('Error: ' + error);
+    }, () => {
+      this.loading = false;
+    }));
+  }
+
+  editProduct(product: Product) {
+    this.productSelected = product;
+    this.outputEmitProduct.emit(product);
+  }
+
+  deleteProduct(product: any) {
+
+  }
+
+  confirmDelete(product: Product): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteProduct(product);
+      },
+      reject: () => {}
+    });
+  }
+
+  selectProduct(event: any) {
+    let product = event;
+    this.products = []
+    this.products.push(product)
+  }
+
+  filterProduct(event: any) {
+    this.getProductsByName(event.query)
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 }

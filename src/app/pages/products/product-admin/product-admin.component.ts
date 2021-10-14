@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Product} from "../../../core/model/product.dto";
 
 @Component({
   selector: 'app-product-admin',
@@ -7,9 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProductAdminComponent implements OnInit {
 
+  @ViewChild("productEditComponent") productEditComponent: any;
+  productSelected = new Product();
+  displayDialog = false;
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  outputEmitProduct(event: Product) {
+    this.productEditComponent.productEdit = event;
+    this.productEditComponent.editar = true;
+    this.productEditComponent.setProductForm();
+
+    this.productSelected = event;
+  }
 }

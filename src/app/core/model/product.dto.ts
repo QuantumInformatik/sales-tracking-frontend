@@ -1,9 +1,9 @@
 export class Product {
-  id: any
+  id?: any
   name: any
   code: any
   stock: any
-  idProvider: any
+  providerId: any
   netPrice: any
   sellPrice: any
   timestamp: any

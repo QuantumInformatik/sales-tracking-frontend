@@ -21,10 +21,10 @@
                    'form-control is-invalid': 'form-control'"/>
           </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-4">
           <div class="mb-2">
-            <label class="form-label">Providers</label>
-            <p-autoComplete [(ngModel)]="providerSelected" [suggestions]="providers" formControlName="idProvider"
+            <label class="form-label">Providers</label><br>
+            <p-autoComplete [(ngModel)]="providerSelected" [suggestions]="providers" formControlName="providerId"
                             (completeMethod)="filterProvider($event)" field="name" [dropdown]="true">
               <ng-template let-provider pTemplate="item">
                 <div class="provider">
@@ -61,8 +61,9 @@
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="update ml-auto mr-auto">
+      <div class="row mr-1">
+        <div class="update ml-auto ">
+          <button type="submit" class="btn btn-primary btn-round" (click)="clearProduct()">Clear</button>
           <button type="submit" class="btn btn-primary btn-round" (click)="saveProduct()"
                   [disabled]="!form.valid || disableButton">Save</button>
         </div>

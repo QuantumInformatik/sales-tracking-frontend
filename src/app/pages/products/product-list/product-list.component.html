@@ -3,6 +3,22 @@
     <h5 class="card-title">Products</h5>
   </div>
   <div class="card-body">
+
+    <div class="col-4">
+      <div class="mb-2">
+        <label class="form-label">Search products</label><br>
+        <p-autoComplete [(ngModel)]="productFind" [suggestions]="products" (onSelect)="selectProduct($event)"
+                        (completeMethod)="filterProduct($event)" field="name" [dropdown]="true">
+          <ng-template let-product pTemplate="item">
+            <div class="product">
+              <div>{{product.name}}</div>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
+    </div>
+    <br>
+
     <p-table [value]="products" [loading]="loading" [paginator]="true" sortMode="single" [sortField]="sortField" [columns]="cols"
              [sortOrder]="sortOrder" [reorderableColumns]="true" [rows]="10" [lazy]="false" [totalRecords]="totalRecords">
       <ng-template pTemplate="header" let-columns>
@@ -17,15 +33,15 @@
         <tr>
           <td>{{product.code}}</td>
           <td>{{product.name}}</td>
-          <td>{{product.provider}}</td>
+          <td>{{product.providerName}}</td>
           <td>{{product.stock}}</td>
           <td>{{product.netPrice}}</td>
           <td>{{product.sellPrice}}</td>
           <td style="width: 170px">
             <div class="row">
               <div class="actions-table">
-                <i class="pi pi-pencil pi-pencil" style="font-size: 2rem"></i>
-                <i class="pi pi-trash pi-trash" style="font-size: 2rem"></i>
+                <i class="pi pi-pencil pi-pencil cursorPointer" style="font-size: 2rem" (click)="editProduct(product)"></i>
+                <i class="pi pi-trash pi-trash cursorPointer" style="font-size: 2rem" (click)="confirmDelete(product)"></i>
               </div>
             </div>
           </td>
