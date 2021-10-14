@@ -34,7 +34,10 @@
           <td>{{product.code}}</td>
           <td>{{product.name}}</td>
           <td>{{product.providerName}}</td>
-          <td>{{product.stock}}</td>
+          <td>
+            <p-tag *ngIf="product.stock > 0" value="{{product.stock}}" rounded="true" severity="success"></p-tag>
+            <p-tag *ngIf="product.stock <= 0" value="{{product.stock}}" rounded="true" severity="danger"></p-tag>
+          </td>
           <td>{{product.netPrice}}</td>
           <td>{{product.sellPrice}}</td>
           <td style="width: 170px">

@@ -26,6 +26,8 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ToastModule} from "primeng/toast";
 import {BrowserModule} from "@angular/platform-browser";
 import { InvoiceAdminComponent } from './pages/invoice/invoice-admin/invoice-admin.component';
+import { ProductInvoiceListComponent } from './pages/invoice/product-invoice-list/product-invoice-list.component';
+import {TagModule} from "primeng/tag";
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { InvoiceAdminComponent } from './pages/invoice/invoice-admin/invoice-adm
     ProductListComponent,
     ReportAdminComponent,
     InvoiceAdminComponent,
+    ProductInvoiceListComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +59,7 @@ import { InvoiceAdminComponent } from './pages/invoice/invoice-admin/invoice-adm
     DialogModule,
     ToastModule,
     ConfirmDialogModule,
+    TagModule
   ],
   providers: [
     MessageService,
