@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {Product} from "../../../core/model/product.dto";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ConfirmationService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {ProductService} from "../../../core/services/product.service";
 import {Subscription} from "rxjs";
 
@@ -27,7 +27,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   public cols: any[] | undefined;
 
   constructor( private router: Router, private route: ActivatedRoute,
-               private confirmationService: ConfirmationService, private productService: ProductService) { }
+               private confirmationService: ConfirmationService, private productService: ProductService,
+               private messageService: MessageService,) { }
 
   ngOnInit(): void {
     this.cols = [
@@ -65,7 +66,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.sub.add(this.productService.deleteProduct(product.id).subscribe(data => {
       this.getProductsByName()
+      this.messageService.add({severity: 'success', summary: 'Success', detail: ''});
     }, error => {
+      this.messageService.add({severity: 'error',summary: 'Error', detail: ''});
       console.error('Error: ' + error);
     }, () => {
     }));

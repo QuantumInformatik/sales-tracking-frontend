@@ -4,6 +4,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Product} from "../../../core/model/product.dto";
 import {Subscription} from "rxjs";
 import {ProductService} from "../../../core/services/product.service";
+import {Provider} from "../../../core/model/provider.dto";
+import {ProviderService} from "../../../core/services/provider.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-product-edit',
@@ -12,32 +15,24 @@ import {ProductService} from "../../../core/services/product.service";
 })
 export class ProductEditComponent implements OnInit, OnDestroy {
 
-  @Input() productEdit: Product | undefined;
+  @Input() productEdit: any | undefined;
   @Output() outputEmitProductSaved: EventEmitter<any> = new EventEmitter();
   private sub: Subscription = new Subscription();
-  providers: any[]
-  providerSelected: any[];
-  dataProviders = [
-    {
-      name: 'COLANTA'
-    },
-    {
-      name: 'COLOMBINA'
-    }
-  ]
+  providers: Provider[]
+  providerSelected: Provider;
   form: FormGroup;
   disableButton: boolean = false;
   editar = false;
 
   constructor(private router: Router, private route: ActivatedRoute, private formBuilder: FormBuilder,
-              private productService: ProductService) {
+              private productService: ProductService, private providerService: ProviderService,
+              private messageService: MessageService,) {
     this.form = formBuilder.group({});
   }
 
   ngOnInit(): void {
-    this.providers = this.dataProviders
-    this.providerSelected = this.providers[0];
     this.initializeForm();
+    this.getProvidersByName()
     if(!ProductEditComponent.isEmptyObject(this.productEdit)){
       this.setProductForm();
     }
@@ -52,17 +47,20 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       providerId: [null, [Validators.required]],
       netPrice: [null, [Validators.required]],
       sellPrice: [null, [Validators.required]],
-      timestamp: [new Date(), [Validators.required]]
+      timestamp: [null]
     });
   }
 
   public setProductForm() {
+    let provider = new Provider()
+    provider.id = this.productEdit.providerId
+    provider.name = this.productEdit.providerName
     this.form.setValue({
       id: this.productEdit?.id,
       name: this.productEdit?.name,
       code: this.productEdit?.code,
       stock: this.productEdit?.stock,
-      providerId: this.dataProviders[0],
+      providerId: provider,
       netPrice: this.productEdit?.netPrice,
       sellPrice: this.productEdit?.sellPrice,
       timestamp: this.productEdit?.timestamp,
@@ -78,9 +76,18 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
     return<Product>{
       ...obj,
-      timestamp: new Date(),
-      providerId: 1
+      providerId: obj['providerId'].id,
+      timestamp: new Date()
     }
+  }
+
+  getProvidersByName(name?: any): void {
+    this.sub.add(this.providerService.getProviders(name).subscribe(data => {
+      this.providers = data.body;
+    }, error => {
+      console.error('Error: ' + error);
+    }, () => {
+    }));
   }
 
   selectProvider(event: any) {
@@ -88,15 +95,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   filterProvider(event: any) {
-    let filtered: any[] = [];
-    let query = event.query;
-    for (let i = 0; i < this.dataProviders.length; i++) {
-      let provider = this.dataProviders[i];
-      if (provider.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtered.push(provider);
-      }
-    }
-    this.providers = filtered;
+    this.getProvidersByName(event.query)
   }
 
   saveProduct() {
@@ -104,9 +103,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     let product = this.buildForm(this.form.controls)
     if(!this.editar){
       this.sub.add(this.productService.saveProduct(product).subscribe(data => {
-
+        this.messageService.add({severity: 'success', summary: 'Success', detail: ''});
       }, error => {
+        this.disableButton = false;
         console.error('Error: ' + error);
+        this.messageService.add({severity: 'error',summary: 'Error', detail: ''});
       },() => {
         this.clearProduct()
         this.outputEmitProductSaved.emit();
@@ -114,11 +115,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       }));
     }else{
       this.sub.add(this.productService.updateProduct(product).subscribe(data => {
-
+        this.messageService.add({severity: 'success', summary: 'Success', detail: ''});
       }, error => {
+        this.messageService.add({severity: 'error',summary: 'Error', detail: ''});
         console.error('Error: ' + error);
       },() => {
-        /*this.clearProduct()*/
+        this.clearProduct()
         this.outputEmitProductSaved.emit();
         this.disableButton = false;
       }));
@@ -135,6 +137,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   clearProduct() {
     this.form.reset();
+    this.editar = false;
     this.providerSelected = this.providers[0];
   }
 }
