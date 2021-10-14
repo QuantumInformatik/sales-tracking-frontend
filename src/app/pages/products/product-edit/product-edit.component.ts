@@ -78,6 +78,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
     return<Product>{
       ...obj,
+      timestamp: new Date(),
       providerId: 1
     }
   }
@@ -112,13 +113,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         this.disableButton = false;
       }));
     }else{
-      /*      this.sub.add(this.productService.update(product).subscribe(data => {
+      this.sub.add(this.productService.updateProduct(product).subscribe(data => {
 
-            }, error => {
-              console.error('Error: ' + error);
-            },() => {
-              this.disableButton = false;
-            }));*/
+      }, error => {
+        console.error('Error: ' + error);
+      },() => {
+        /*this.clearProduct()*/
+        this.outputEmitProductSaved.emit();
+        this.disableButton = false;
+      }));
     }
   }
 

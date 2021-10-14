@@ -47,7 +47,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.sub.add(this.productService.getProducts(name).subscribe(data => {
       this.products = data.body;
-      this.productFind = this.products[0]
       this.totalRecords = data.length;
     }, error => {
       this.loading = false;
@@ -63,7 +62,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   deleteProduct(product: any) {
-
+    this.loading = true;
+    this.sub.add(this.productService.deleteProduct(product.id).subscribe(data => {
+      this.getProductsByName()
+    }, error => {
+      console.error('Error: ' + error);
+    }, () => {
+    }));
   }
 
   confirmDelete(product: Product): void {
