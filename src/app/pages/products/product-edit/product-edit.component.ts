@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Product} from "../../../core/model/product.dto";
@@ -13,6 +13,7 @@ import {ProductService} from "../../../core/services/product.service";
 export class ProductEditComponent implements OnInit, OnDestroy {
 
   @Input() productEdit: Product | undefined;
+  @Output() outputEmitProductSaved: EventEmitter<any> = new EventEmitter();
   private sub: Subscription = new Subscription();
   providers: any[]
   providerSelected: any[];
@@ -107,6 +108,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         console.error('Error: ' + error);
       },() => {
         this.clearProduct()
+        this.outputEmitProductSaved.emit();
         this.disableButton = false;
       }));
     }else{

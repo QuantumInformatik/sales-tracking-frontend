@@ -33,7 +33,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.cols = [
       { field: 'code', header: 'Code', width: '140px',sort: true, align: 'left' },
       { field: 'name', header: 'Name', width: '140px',sort: true, align: 'left' },
-      { field: 'provider', header: 'Provider', width: '140px',sort: true, align: 'left' },
+      { field: 'providerName', header: 'Provider', width: '140px',sort: true, align: 'left' },
       { field: 'stock', header: 'Stock', width: '140px',sort: true, align: 'left' },
       { field: 'netPrice', header: 'Net price', width: '140px',sort: true, align: 'left' },
       { field: 'sellPrice', header: 'Sell price', width: '140px',sort: true, align: 'left' },
