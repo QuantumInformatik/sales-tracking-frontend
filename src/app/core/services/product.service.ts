@@ -18,6 +18,18 @@ export class ProductService {
     return this.http.post(urlBase, product);
   }
 
+  updateProduct(product: Product): Observable<any> {
+    return this.http.put(urlBase, product);
+  }
+
+  deleteProduct(productId: number): Observable<any> {
+    let queryParam = "";
+    if(productId){
+      queryParam = `?productId=${productId}`
+    }
+    return this.http.delete(`${urlBase}/delete${queryParam}`);
+  }
+
   getProducts(name: any): Observable<any> {
     let queryParam = "";
     if(name){

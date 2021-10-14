@@ -9,6 +9,7 @@ import {Product} from "../../../core/model/product.dto";
 export class ProductAdminComponent implements OnInit {
 
   @ViewChild("productEditComponent") productEditComponent: any;
+  @ViewChild("productListComponent") productListComponent: any;
   productSelected = new Product();
   displayDialog = false;
 
@@ -21,7 +22,10 @@ export class ProductAdminComponent implements OnInit {
     this.productEditComponent.productEdit = event;
     this.productEditComponent.editar = true;
     this.productEditComponent.setProductForm();
-
     this.productSelected = event;
+  }
+
+  outputEmitProductSaved() {
+    this.productListComponent.getProductsByName()
   }
 }
