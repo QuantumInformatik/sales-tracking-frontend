@@ -25,6 +25,7 @@ import {DialogModule} from "primeng/dialog";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ToastModule} from "primeng/toast";
 import {BrowserModule} from "@angular/platform-browser";
+import { InvoiceAdminComponent } from './pages/invoice/invoice-admin/invoice-admin.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {BrowserModule} from "@angular/platform-browser";
     ProductEditComponent,
     ProductListComponent,
     ReportAdminComponent,
+    InvoiceAdminComponent,
   ],
   imports: [
     BrowserModule,
